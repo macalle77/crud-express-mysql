@@ -1,6 +1,6 @@
 var LocalStrategy   = require('passport-local').Strategy;
 //var User = require('../model/users');
-var usermysql = require('../model/user-mysql');
+var usermysql = require('mysql')
 //var usermysql = require('../model/user-mysql');
 var bCrypt = require('bcrypt-nodejs');
 
@@ -11,7 +11,13 @@ module.exports = function(passport){
         },
         function(req, email, password, done) {
             // check in mongo if a user with email exists or not
-            usermysql.getUserEmail(email,function(err,rows){
+            var config = require('../libs/config');
+
+            var db=usermysql.createConnection(config);
+
+            db.connect();
+
+            db.query('SELECT * FROM accesos WHERE email= ?', email, function(err,rows,fileds){
               if(err)
                 return done(err);
               if(rows.length > 0){

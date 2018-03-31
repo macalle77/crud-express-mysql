@@ -3,10 +3,10 @@ var mysql = require('mysql'),
 //creamos la conexion a nuestra base de datos con los datos de acceso de cada uno
 connection = mysql.createConnection(
 	{
-		host: 'localhost', 
-		user: 'root',
-		password: 'root',
-		database: 'prueba'
+		host : '192.168.56.102',
+		user : 'miguel',
+		password :'miguel',
+		database : 'prueba'
 	}
 );
 
@@ -50,6 +50,47 @@ userModel.getUser = function(id,callback)
 		});
 	}
 }
+
+//obtenemos un usuario por su nombre de usuario
+userModel.getUserName = function(user,callback)
+{
+	if (connection)
+	{
+		var sql = 'SELECT * FROM accesos WHERE username = ' + connection.escape(user);
+		connection.query(sql, function(error, row)
+		{
+			if(error)
+			{
+				throw error;
+			}
+			else
+			{
+				callback(null, row);
+			}
+		});
+	}
+}
+
+//obtenemos un usuario por su email
+userModel.getUserEmail = function(email,callback)
+{
+	if (connection)
+	{
+		var sql = 'SELECT * FROM accesos WHERE email = ' + connection.escape(email);
+		connection.query(sql, function(error, row)
+		{
+			if(error)
+			{
+				throw error;
+			}
+			else
+			{
+				callback(null, row);
+			}
+		});
+	}
+}
+
 
 //añadir un nuevo usuario
 userModel.insertUser = function(userData,callback)

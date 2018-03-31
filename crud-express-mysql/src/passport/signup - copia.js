@@ -1,6 +1,6 @@
 var LocalStrategy   = require('passport-local').Strategy;
 //var User = require('../model/users');
-var usermysql = require('../model/user-mysql');
+var usermysql = require('mysql')
 //var usermysql = require('../model/user-mysql');
 var bCrypt = require('bcrypt-nodejs');
 
@@ -13,7 +13,13 @@ module.exports = function(passport){
 
             findOrCreateUser = function(){
                 // find a user in Mongo with provided username
-                usermysql.getUserName(username,function(err,rows){
+                var config = require('../libs/config');
+
+                var db=usermysql.createConnection(config);
+
+                db.connect();
+
+                db.query('SELECT * FROM accesos WHERE username= ?', username, function(err,rows,fileds){
                   if(err){
                     console.log('Error in SignUp: '+err);
                     return done(err);
@@ -34,8 +40,7 @@ module.exports = function(passport){
                           username : username
                         };
                         // save the user
-                        //db.query('INSERT INTO accesos SET ?', newUser, function(err, rows, fields){
-                        usermysql.insertUser(newUser,function(err,rows){
+                        db.query('INSERT INTO accesos SET ?', newUser, function(err, rows, fields){
                             if (err){
                                 console.log('Error in Saving user: '+err);
                                 throw err;
